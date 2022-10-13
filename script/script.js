@@ -50,7 +50,7 @@ const data = [
 
     form.insertAdjacentHTML('beforeend', `
       <label class="form-group me-3 mb-0">
-        <input type="text" class="form-control" placeholder="ввести задачу">
+        <input type="text" class="form-control" name="title" placeholder="ввести задачу">
       </label>
     `);
 
@@ -101,22 +101,24 @@ const data = [
     return table;
   };
 
-  const createRow = ({task: name, number, title, status}) => {
+  const createRow = ({title}, index) => {
     const tr = document.createElement('tr');
-    (status === 'Выполнена') ? tr.classList.add('table-success') : tr.classList.add('table-light');
+    tr.classList.add('table-light');
+
+    // (status === 'Выполнена') ? tr.classList.add('table-success') : tr.classList.add('table-light');
 
     const tdNum = document.createElement('td');
+    tdNum.textContent = index + 1;
 
-    tdNum.textContent = number;
     const tdTitle = document.createElement('td');
 
-    if (status === 'Выполнена') {
-      tdTitle.classList.add('text-decoration-line-through');
-    }
+    // if (status === 'Выполнена') {
+    //   tdTitle.classList.add('text-decoration-line-through');
+    // }
 
     tdTitle.textContent = title;
     const tdStatus = document.createElement('td');
-    tdStatus.textContent = status;
+    tdStatus.textContent = "В процессе";
     const tdActions = document.createElement('td');
     const buttonDel = document.createElement('button');
     buttonDel.classList.add('btn', 'btn-danger', 'me-1');
@@ -132,7 +134,7 @@ const data = [
   };
 
   const renderTask = (elem, data) => {
-    const allRow = data.map((elem) => createRow(elem));
+    const allRow = data.map((elem, index) => createRow(elem, index));
 
     elem.append(...allRow);
     return allRow;
@@ -178,31 +180,36 @@ const data = [
     })
   };
 
-  const addTaskPage = (task, list) => {
-    list.append(createRow(task));
+  const addTaskPage = (task, list, index) => {
+    list.append(createRow(task, index));
   };
 
-  const formControl = (form, list, name) => {
+  const delTaskPage = (task, list, index) => {
+    list.delete()
+  }
+
+  const formControl = (form, list, name, index) => {
     form.addEventListener('submit', e => {
       e.preventDefault();
       console.log('e.target', e.target);
       const formData = new FormData(e.target);
       const newTask = Object.fromEntries(formData);
 
+      index = Number(list.childNodes.length);
+
       console.log('formData', formData);
       console.log('newTask', newTask);
 
-      addTaskPage(newTask, list);
+      addTaskPage(newTask, list, index);
       addTaskData(name, newTask);
 
-      // form.reset();
+      form.reset();
     });
   };
 
 // localStorage.clear();
   const init = () => {
     const name = prompt('Введите своё имя:');
-    // const name = 'Нина';
     const {
       list,
       form,
