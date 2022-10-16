@@ -59,7 +59,7 @@ const data = [
         className: 'btn btn-primary me-3',
         type: 'submit',
         text: 'Сохранить',
-        disabled: false,
+        disabled: true,
       },
       {
         className: 'btn btn-warning',
@@ -101,24 +101,24 @@ const data = [
     return table;
   };
 
-  const createRow = ({title}, index) => {
+  const createRow = ({title, status}, index) => {
     const tr = document.createElement('tr');
-    tr.classList.add('table-light');
+    // tr.classList.add('table-light');
 
-    // (status === 'Выполнена') ? tr.classList.add('table-success') : tr.classList.add('table-light');
+    (status === 'Выполнена') ? tr.classList.add('table-success') : tr.classList.add('table-light');
 
     const tdNum = document.createElement('td');
     tdNum.textContent = index + 1;
 
     const tdTitle = document.createElement('td');
-
-    // if (status === 'Выполнена') {
-    //   tdTitle.classList.add('text-decoration-line-through');
-    // }
-
     tdTitle.textContent = title;
+    if (status === 'Выполнена') {
+      tdTitle.classList.add('text-decoration-line-through');
+    }
+
     const tdStatus = document.createElement('td');
-    tdStatus.textContent = "В процессе";
+    tdStatus.textContent = status;
+
     const tdActions = document.createElement('td');
     const buttonDel = document.createElement('button');
     buttonDel.classList.add('btn', 'btn-danger', 'me-1');
@@ -184,24 +184,70 @@ const data = [
     list.append(createRow(task, index));
   };
 
-  const delTaskPage = (task, list, index) => {
-    list.delete()
+  const delTaskPage = (data, list, key) => {
+    list.addEventListener('click', e => {
+      const target = e.target;
+
+      if (target.closest('.btn-danger')) {
+        console.log('data', data);
+        for (let i = 0; i < data.length; i++) {
+          console.log('data[i].id', data[i].id);
+          if (Number(target.closest('.table-light').children[0].textContent) === data[i].id) {
+            data.splice(i, 1);
+          }
+        }
+        target.closest('.table-light').remove();
+        removeStorage(key, target.closest('.table-light').children[1].textContent);
+        list.innerHTML = '';
+        renderTask(list, getStorage(key));
+      }
+    });
+  };
+
+  const removeStorage = (key, titleTask) => {
+    const data = getStorage(key);
+    const dataNew = data.filter(item => item.title !== titleTask);
+    setStorage(key, dataNew);
+  };
+
+  const completeTask = (data, list, name) => {
+    list.addEventListener('click', e => {
+      const target = e.target;
+
+      if (target.closest('.btn-success')) {
+        for (let i = 0; i < data.length; i++) {
+
+          if (target.closest('.table-light').children[1].textContent === data[i].title) {
+            target.closest('.table-light').children[1].classList.add('text-decoration-line-through');
+            target.closest('.table-light').children[2].textContent = 'Выполнена';
+            data[i].status = 'Выполнена';
+            target.closest('.table-light').classList.add('table-success');
+            target.closest('.table-light').classList.toggle('table-light');
+            setStorage(name, data);
+          }
+        }
+      }
+    });
   }
 
   const formControl = (form, list, name, index) => {
+    const inpText = document.querySelector('.form-group');
+    const btn = document.querySelector('.btn-primary');
+    inpText.addEventListener('input', e => {
+      btn.disabled = false;
+    });
     form.addEventListener('submit', e => {
       e.preventDefault();
-      console.log('e.target', e.target);
+
       const formData = new FormData(e.target);
       const newTask = Object.fromEntries(formData);
 
       index = Number(list.childNodes.length);
-
-      console.log('formData', formData);
-      console.log('newTask', newTask);
+      newTask.status = "В процессе";
 
       addTaskPage(newTask, list, index);
       addTaskData(name, newTask);
+      btn.disabled = true;
 
       form.reset();
     });
@@ -215,12 +261,12 @@ const data = [
       form,
     } = renderToDo();
 
-    const inpText = document.querySelector('.form-control');
-
+    // const inpText = document.querySelector('.form-control');
     const data = getStorage(name);
-
-
     const allRow = renderTask(list, data);
+
+    delTaskPage(data, list, name);
+    completeTask(data, list, name);
     formControl(form, list, name);
   };
 
