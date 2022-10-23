@@ -103,8 +103,6 @@ const data = [
 
   const createRow = ({title, status}, index) => {
     const tr = document.createElement('tr');
-    // tr.classList.add('table-light');
-
     (status === 'Выполнена') ? tr.classList.add('table-success') : tr.classList.add('table-light');
 
     const tdNum = document.createElement('td');
@@ -123,6 +121,7 @@ const data = [
     const buttonDel = document.createElement('button');
     buttonDel.classList.add('btn', 'btn-danger', 'me-1');
     buttonDel.textContent = 'Удалить';
+
     const buttonFinish = document.createElement('button');
     buttonFinish.classList.add('btn', 'btn-success');
     buttonFinish.textContent = 'Завершить';
@@ -170,15 +169,15 @@ const data = [
     setStorage(key, data);
   };
 
-  const resetControl = (inpText) => {
-    const btnReset = document.querySelector('.btn-warning');
-
-    btnReset.addEventListener('click', e => {
-      if ((inpText.placeholder !== '') || (inpText.placeholder !== 'ввести задачу')) {
-        return inpText.placeholder === 'ввести задачу';
-      }
-    })
-  };
+  // const resetControl = (inpText) => {
+  //   const btnReset = document.querySelector('.btn-warning');
+  //
+  //   btnReset.addEventListener('click', e => {
+  //     if ((inpText.placeholder !== '') || (inpText.placeholder !== 'ввести задачу')) {
+  //       return inpText.placeholder === 'ввести задачу';
+  //     }
+  //   })
+  // };
 
   const addTaskPage = (task, list, index) => {
     list.append(createRow(task, index));
@@ -189,15 +188,14 @@ const data = [
       const target = e.target;
 
       if (target.closest('.btn-danger')) {
-        console.log('data', data);
+        const className = target.closest('.table-success') ? '.table-success' : '.table-light';
         for (let i = 0; i < data.length; i++) {
-          console.log('data[i].id', data[i].id);
-          if (Number(target.closest('.table-light').children[0].textContent) === data[i].id) {
+          if (target.closest(className).children[1].textContent === data[i].title) {
             data.splice(i, 1);
           }
         }
-        target.closest('.table-light').remove();
-        removeStorage(key, target.closest('.table-light').children[1].textContent);
+        target.closest(className).remove();
+        removeStorage(key, target.closest(className).children[1].textContent);
         list.innerHTML = '';
         renderTask(list, getStorage(key));
       }
@@ -210,22 +208,26 @@ const data = [
     setStorage(key, dataNew);
   };
 
-  const completeTask = (data, list, name) => {
+  const completeTask = (list, name) => {
     list.addEventListener('click', e => {
       const target = e.target;
 
       if (target.closest('.btn-success')) {
-        for (let i = 0; i < data.length; i++) {
+        const dataNew = getStorage(name);
 
-          if (target.closest('.table-light').children[1].textContent === data[i].title) {
+        for (let i = 0; i < dataNew.length; i++) {
+          if (target.closest('.table-light').children[1].textContent === dataNew[i].title) {
             target.closest('.table-light').children[1].classList.add('text-decoration-line-through');
             target.closest('.table-light').children[2].textContent = 'Выполнена';
-            data[i].status = 'Выполнена';
+            dataNew[i].status = 'Выполнена';
             target.closest('.table-light').classList.add('table-success');
             target.closest('.table-light').classList.toggle('table-light');
-            setStorage(name, data);
+            setStorage(name, dataNew);
+
           }
         }
+        list.innerHTML = '';
+        renderTask(list, getStorage(name));
       }
     });
   }
@@ -234,7 +236,9 @@ const data = [
     const inpText = document.querySelector('.form-group');
     const btn = document.querySelector('.btn-primary');
     inpText.addEventListener('input', e => {
-      btn.disabled = false;
+      if (e.target.value === '') {
+        btn.disabled = false;
+      }
     });
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -260,14 +264,15 @@ const data = [
       list,
       form,
     } = renderToDo();
-
-    // const inpText = document.querySelector('.form-control');
     const data = getStorage(name);
-    const allRow = renderTask(list, data);
 
-    delTaskPage(data, list, name);
-    completeTask(data, list, name);
     formControl(form, list, name);
+
+    renderTask(list, data);
+    completeTask(list, name);
+    delTaskPage(data, list, name);
+    // console.log(Math.random().toString().substring(2, 10));
+
   };
 
   init();
