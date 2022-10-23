@@ -236,9 +236,7 @@ const data = [
     const inpText = document.querySelector('.form-group');
     const btn = document.querySelector('.btn-primary');
     inpText.addEventListener('input', e => {
-      if (e.target.value === '') {
-        btn.disabled = false;
-      }
+      e.target.value !== ' ' ? btn.disabled = false : btn.disabled = true;
     });
     form.addEventListener('submit', e => {
       e.preventDefault();
