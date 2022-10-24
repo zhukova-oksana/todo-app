@@ -18,10 +18,20 @@ const {
 } = render;
 
 {
+  const nameInputControl = () => {
+    let nameInput = prompt('Введите своё имя:');
+    console.log('name', name);
+    if (nameInput === null) {
+      nameInput = 'Общий';
+    };
+    console.log('name', name);
+    return nameInput;
+  }
 
 // localStorage.clear();
   const init = () => {
-    const name = prompt('Введите своё имя:');
+    const name = nameInputControl();
+
     const {
       list,
       form,
