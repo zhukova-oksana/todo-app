@@ -12,6 +12,14 @@ const {
   createRow,
 } = create;
 
+const nameInputControl = () => {
+  let nameInput = prompt('Введите своё имя:');
+  if (nameInput === null) {
+    nameInput = 'Общий';
+  }
+  return nameInput;
+}
+
 const addClass = (className) => {
   const classAdd = ['vh-100', 'w-100', 'd-flex', 'align-items-center', 'justify-content-center', 'flex-column'];
   const container = document.querySelector(className);
@@ -74,13 +82,27 @@ const completeTask = (list, name) => {
   });
 };
 
+const resetControl = (btn, form) => {
+  const btnReset = document.querySelector('.btn-warning');
+  console.log(btnReset);
+  btnReset.addEventListener('click', e => {
+    e.preventDefault();
+    form.reset();
+    btn.disabled = true;
+  })
+}
+
 const formControl = (form, list, name, index) => {
   const inpText = document.querySelector('.form-group');
   const btn = document.querySelector('.btn-primary');
+
   inpText.addEventListener('input', e => {
     let str = e.target.value;
     str.trim() !== '' ? btn.disabled = false : btn.disabled = true;
   });
+
+  resetControl(btn, form);
+  
   form.addEventListener('submit', e => {
     e.preventDefault();
 
@@ -99,6 +121,7 @@ const formControl = (form, list, name, index) => {
 };
 
 export default {
+  nameInputControl,
   addClass,
   addTaskPage,
   cellNumbering,
