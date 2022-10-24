@@ -14,10 +14,14 @@ const {
 
 const nameInputControl = () => {
   let nameInput = prompt('Введите своё имя:');
-  if (nameInput === null) {
-    nameInput = 'Общий';
+  let newName;
+  if (!nameInput) {
+    newName = 'Общий';
+  } else {
+    newName = nameInput;
   }
-  return nameInput;
+  // console.log(newName);
+  return newName;
 }
 
 const addClass = (className) => {
@@ -84,7 +88,7 @@ const completeTask = (list, name) => {
 
 const resetControl = (btn, form) => {
   const btnReset = document.querySelector('.btn-warning');
-  console.log(btnReset);
+
   btnReset.addEventListener('click', e => {
     e.preventDefault();
     form.reset();
@@ -102,7 +106,7 @@ const formControl = (form, list, name, index) => {
   });
 
   resetControl(btn, form);
-  
+
   form.addEventListener('submit', e => {
     e.preventDefault();
 
