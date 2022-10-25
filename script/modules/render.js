@@ -1,4 +1,4 @@
-import create from './createEments.js';
+import create from './createElements.js';
 import control from './control.js';
 
 const {
@@ -10,6 +10,7 @@ const {
 } = create;
 
 const {
+  nameInputControl,
   addClass,
 } = control;
 
@@ -25,19 +26,21 @@ const renderToDo = () => {
   const tableWrapper = createContainer();
   const form = createForm();
   const table = createTable();
+  const name = nameInputControl();
 
-  container.append(createTitle('Todo App'));
+  container.append(createTitle('Todo App: ', name));
   container.append(form);
   tableWrapper.append(table);
   container.append(tableWrapper);
 
   return {
+    name,
     list: table.tbody,
     form,
-  }
+  };
 };
 
 export default {
   renderTask,
   renderToDo,
-}
+};

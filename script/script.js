@@ -3,7 +3,6 @@ import service from './modules/serviceStorage.js';
 import render from './modules/render.js';
 
 const {
-  nameInputControl,
   delTaskPage,
   completeTask,
   formControl,
@@ -19,13 +18,10 @@ const {
 } = render;
 
 {
-
-
 // localStorage.clear();
   const init = () => {
-    const name = nameInputControl();
-
     const {
+      name,
       list,
       form,
     } = renderToDo();
@@ -36,7 +32,6 @@ const {
     renderTask(list, data);
     completeTask(list, name);
     delTaskPage(data, list, name);
-
   };
 
   init();

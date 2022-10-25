@@ -1,8 +1,8 @@
-const createTitle = (name) => {
-  const title = document.createElement('h3');
-  title.textContent = name;
-  return title;
-}
+const createTitle = (title, name) => {
+  const titleContainer = document.createElement('h3');
+  titleContainer.textContent = title + name;
+  return titleContainer;
+};
 
 const createButtonsGroup = params => {
   const btns = params.map(({className, type, text, disabled}) => {
@@ -114,4 +114,4 @@ export default {
   createContainer,
   createTable,
   createRow,
-}
+};

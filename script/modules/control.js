@@ -1,5 +1,5 @@
 import service from './serviceStorage.js';
-import create from './createEments.js';
+import create from './createElements.js';
 
 const {
   getStorage,
@@ -13,19 +13,18 @@ const {
 } = create;
 
 const nameInputControl = () => {
-  let nameInput = prompt('Введите своё имя:');
+  const nameInput = prompt('Введите своё имя:');
   let newName;
   if (!nameInput) {
-    newName = 'Общий';
+    newName = 'Аноним';
   } else {
     newName = nameInput;
   }
-  // console.log(newName);
   return newName;
-}
+};
 
 const addClass = (className) => {
-  const classAdd = ['vh-100', 'w-100', 'd-flex', 'align-items-center', 'justify-content-center', 'flex-column'];
+  const classAdd = ['vh-100','w-100','d-flex','align-items-center','justify-content-center','flex-column'];
   const container = document.querySelector(className);
   container.classList.add(...classAdd);
   return container;
@@ -40,7 +39,7 @@ const cellNumbering = (list) => {
   for (let i = 0; i < listTr.length; i++) {
     listTr[i].children[0].textContent = i + 1;
   }
-}
+};
 
 const delTaskPage = (data, list, key) => {
   list.addEventListener('click', e => {
@@ -81,7 +80,6 @@ const completeTask = (list, name) => {
       }
       // list.innerHTML = '';
       // renderTask(list, getStorage(name));
-
     }
   });
 };
@@ -93,15 +91,15 @@ const resetControl = (btn, form) => {
     e.preventDefault();
     form.reset();
     btn.disabled = true;
-  })
-}
+  });
+};
 
 const formControl = (form, list, name, index) => {
   const inpText = document.querySelector('.form-group');
   const btn = document.querySelector('.btn-primary');
 
   inpText.addEventListener('input', e => {
-    let str = e.target.value;
+    const str = e.target.value;
     str.trim() !== '' ? btn.disabled = false : btn.disabled = true;
   });
 
@@ -114,7 +112,7 @@ const formControl = (form, list, name, index) => {
     const newTask = Object.fromEntries(formData);
 
     index = Number(list.childNodes.length);
-    newTask.status = "В процессе";
+    newTask.status = 'В процессе';
 
     addTaskPage(newTask, list, index);
     addTaskData(name, newTask);
